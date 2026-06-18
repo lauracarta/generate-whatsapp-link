@@ -15,7 +15,8 @@ export function normalizeNumber(phoneNumber: string, countryCode: string): strin
     digits = trimmed.replace(/\D/g, "");
   } else {
     const stripped = trimmed.replace(/\D/g, "").replace(/^0+/, "");
-    digits = stripped.length <= 11 && countryCode ? `${countryCode}${stripped}` : stripped;
+    const alreadyHasCode = countryCode && stripped.startsWith(countryCode) && stripped.length > countryCode.length;
+    digits = !alreadyHasCode && stripped.length <= 11 && countryCode ? `${countryCode}${stripped}` : stripped;
   }
 
   if (digits.length < 8 || digits.length > 15) return null;

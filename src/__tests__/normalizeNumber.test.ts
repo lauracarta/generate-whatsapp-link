@@ -103,13 +103,43 @@ describe("local format — no prepend when >11 digits (country code already incl
     expect(normalizeNumber("5511912345678", "55")).toBe("5511912345678");
   });
 
-  test("USA 11-digit — 14155550123 (edge: exactly 11, gets prepended)", () => {
-    // 11 digits ≤ 11, so countryCode IS prepended — caller should pass + form for 11-digit numbers
-    expect(normalizeNumber("14155550123", "1")).toBe("114155550123");
+  test("USA 11-digit already has country code — not prepended again", () => {
+    // starts with "1" and remainder "4155550123" is 10 digits — detected as already having code
+    expect(normalizeNumber("14155550123", "1")).toBe("14155550123");
   });
 
   test("12-digit number — not prepended", () => {
     expect(normalizeNumber("441234567890", "44")).toBe("441234567890");
+  });
+});
+
+// ─── Duplicate country code prevention ───────────────────────────────────────
+
+describe("duplicate country code prevention", () => {
+  test("Brazil: typed 5511912345678 with countryCode 55 — not doubled", () => {
+    expect(normalizeNumber("5511912345678", "55")).toBe("5511912345678");
+  });
+
+  test("Brazil: typed 55 11 91234-5678 with countryCode 55 — not doubled", () => {
+    expect(normalizeNumber("55 11 91234-5678", "55")).toBe("5511912345678");
+  });
+
+  test("USA: typed 14155550123 with countryCode 1 — not doubled", () => {
+    expect(normalizeNumber("14155550123", "1")).toBe("14155550123");
+  });
+
+  test("UK: typed 447911123456 with countryCode 44 — not doubled", () => {
+    expect(normalizeNumber("447911123456", "44")).toBe("447911123456");
+  });
+
+  test("India: typed 919876543210 with countryCode 91 — not doubled", () => {
+    expect(normalizeNumber("919876543210", "91")).toBe("919876543210");
+  });
+
+  test("ambiguous short number starting with code — treated as already containing it", () => {
+    // "55123456" starts with "55"; we conservatively assume it already includes the country code
+    // to avoid ever doubling. User can always type + prefix to be explicit.
+    expect(normalizeNumber("55123456", "55")).toBe("55123456");
   });
 });
 
