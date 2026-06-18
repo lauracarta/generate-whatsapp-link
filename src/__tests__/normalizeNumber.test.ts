@@ -191,9 +191,7 @@ describe("buildWhatsAppUrl", () => {
   });
 
   test("with plain message", () => {
-    expect(buildWhatsAppUrl("5511912345678", "Hello!")).toBe(
-      "https://wa.me/5511912345678?text=Hello!",
-    );
+    expect(buildWhatsAppUrl("5511912345678", "Hello!")).toBe("https://wa.me/5511912345678?text=Hello!");
   });
 
   test("message with spaces and special chars is encoded", () => {

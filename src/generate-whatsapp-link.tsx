@@ -194,7 +194,6 @@ const COUNTRY_CODES: { code: string; label: string }[] = [
   { code: "998", label: "🇺🇿 +998 — Uzbekistan" },
 ];
 
-
 export default function Command() {
   const { defaultCountryCode } = getPreferenceValues<Preferences>();
   const [phoneNumber, setPhoneNumber] = useState("");
